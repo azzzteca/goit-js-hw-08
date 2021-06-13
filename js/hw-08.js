@@ -1,4 +1,4 @@
-import items from '/js/apps.js';
+import items from './apps.js';
 
 const galleryEl = document.querySelector(".js-gallery");
 const modalEl = document.querySelector(".js-lightbox");
