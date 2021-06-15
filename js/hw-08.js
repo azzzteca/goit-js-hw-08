@@ -4,6 +4,7 @@ const galleryEl = document.querySelector(".js-gallery");
 const modalEl = document.querySelector(".js-lightbox");
 const buttonCloseEl = document.querySelector(".lightbox__button");
 const overlayEl = document.querySelector(".lightbox__overlay");
+const imageModalEl = document.querySelector(".lightbox__image");
 
 const newItems = items
 .map(({original, preview, description}) => `<li class="gallery__item">
@@ -13,11 +14,15 @@ const newItems = items
 </li>`)
 .join("");
 
-galleryEl.insertAdjacentHTML("beforeend", newItems);
+// galleryEl.insertAdjacentHTML("beforeend", newItems);
+galleryEl.innerHTML = newItems;
 
 galleryEl.addEventListener("click", onModalOpen);
 
-function onModalOpen (evt){
+const photosEl = document.querySelectorAll(".gallery__image");
+const photosInModalEl = document.querySelector(".lightbox__image");
+
+function onModalOpen (evt){ 
     if (!evt.target.classList.contains ("gallery__image")) {
         return;
     };
@@ -25,43 +30,55 @@ function onModalOpen (evt){
     evt.preventDefault();
 
     modalEl.classList.add("is-open");
-
-    const imageModalEl = document.querySelector(".lightbox__image");
-    
     imageModalEl.src = evt.target.dataset.source;
     imageModalEl.alt = evt.target.alt;
 
     buttonCloseEl.addEventListener("click", onModalClose);
-
-    overlayEl.addEventListener("click", onModalClose);
-
-    window.addEventListener("keydown", evt => {
-        if (evt.code === "Escape") {
-            onModalClose();
-            return;
-        };
-        // if (evt.code === "") {
-
-        //     return;
-        // };
-        // if (evt.code === "") {
-
-        // }
-    });
-
-
-
-    
+    overlayEl.addEventListener("click", onModalClose); 
+    window.addEventListener("keydown", onKeyDownActionInOpenedModal);
 };
+
+function onKeyDownActionInOpenedModal (evt) {
+    if (evt.code === "Escape") {
+
+        onModalClose(evt);
+    };
+    
+    if (evt.code !== "ArrowRight" && evt.code !== "ArrowLeft") {
+        return;
+    }
+
+    for (let i = 0; i < photosEl.length; i +=1) {
+
+        if (photosEl[i].dataset.source === photosInModalEl.src) {
+
+            if (evt.code === "ArrowRight") {
+                if (i === photosEl.length - 1) {
+                    return;
+                };
+        
+                photosInModalEl.src = photosEl[i + 1].dataset.source;
+                return;
+            };
+
+            if (evt.code === "ArrowLeft") {
+                if (i === 0) {
+                    return;
+                };
+        
+                photosInModalEl.src = photosEl[i - 1].dataset.source;
+                return;
+            };
+        };
+
+
+        };
+    };
 
 function onModalClose (evt) {
     modalEl.classList.remove("is-open");
     buttonCloseEl.removeEventListener("click", onModalClose);
-    overlayEl.removeEventListener("click", onModalClose);
-    window.removeEventListener("keydown", evt => {
-        if (evt.code === "Escape") {
-            onModalClose();
-        };
-    });
+    overlayEl.removeEventListener("click", onModalClose); 
+    window.removeEventListener("keydown", onKeyDownActionInOpenedModal);
 };
 
