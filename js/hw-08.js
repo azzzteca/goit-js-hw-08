@@ -58,6 +58,7 @@ function onKeyDownActionInOpenedModal (evt) {
                 };
         
                 photosInModalEl.src = photosEl[i + 1].dataset.source;
+                photosInModalEl.alt = photosEl[i + 1].alt;
                 return;
             };
 
@@ -67,6 +68,7 @@ function onKeyDownActionInOpenedModal (evt) {
                 };
         
                 photosInModalEl.src = photosEl[i - 1].dataset.source;
+                photosInModalEl.alt = photosEl[i - 1].alt;
                 return;
             };
         };
@@ -77,6 +79,10 @@ function onKeyDownActionInOpenedModal (evt) {
 
 function onModalClose (evt) {
     modalEl.classList.remove("is-open");
+
+    imageModalEl.src = "";
+    imageModalEl.alt = "";
+
     buttonCloseEl.removeEventListener("click", onModalClose);
     overlayEl.removeEventListener("click", onModalClose); 
     window.removeEventListener("keydown", onKeyDownActionInOpenedModal);
